@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card card-festa shadow">
+            <div class="card-header bg-success text-white text-center">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-check-circle"></i> QR Code Gerado com Sucesso!
+                </h3>
+            </div>
+            <div class="card-body p-4 text-center">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h5><i class="bi bi-person-badge"></i> Informações do Funcionário</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <strong>Nome:</strong> {{ qr_code.employee_name }}<br>
+                                    <strong>ID:</strong> {{ qr_code.employee_id }}<br>
+                                    <strong>Gerado em:</strong> {{ qr_code.created_at }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <h5><i class="bi bi-qr-code"></i> Seu QR Code</h5>
+                        <img src="{{ url_for('static', filename=qr_code.qr_image_path.replace('static/', '')) }}" 
+                             alt="QR Code para {{ qr_code.employee_name }}" 
+                             class="img-fluid qr-code-img">
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning d-flex align-items-center mt-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>
+                        <strong>Importante:</strong> 
+                        Este QR Code pode ser usado apenas UMA vez para entrada na festa. 
+                        Guarde-o com cuidado!
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('static', filename=qr_code.qr_image_path.replace('static/', '')) }}" 
+                       download="festa_qr_{{ qr_code.employee_id }}.png" 
+                       class="btn btn-outline-success me-2">
+                        <i class="bi bi-download"></i> Baixar QR Code
+                    </a>
+                    
+                    <a href="{{ url_for('index') }}" class="btn btn-festa">
+                        <i class="bi bi-plus-circle"></i> Gerar Outro QR
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-phone festa-icon"></i>
+                        <h6 class="card-title">No Celular</h6>
+                        <p class="card-text small">Salve a imagem ou tire uma screenshot</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-printer festa-icon"></i>
+                        <h6 class="card-title">Impresso</h6>
+                        <p class="card-text small">Imprima o QR Code em papel</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-envelope festa-icon"></i>
+                        <h6 class="card-title">Por Email</h6>
+                        <p class="card-text small">Envie para seu email pessoal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

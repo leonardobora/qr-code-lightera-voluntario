@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card card-festa shadow">
+            <div class="card-header bg-danger text-white text-center">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-qr-code"></i> Gerar QR Code
+                </h3>
+                <p class="mb-0">Para acesso à Festa de Final de Ano</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('generate_qr') }}">
+                    <div class="mb-3">
+                        <label for="employee_name" class="form-label">
+                            <i class="bi bi-person-fill"></i> Nome do Funcionário
+                        </label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="employee_name" 
+                               name="employee_name" 
+                               placeholder="Digite o nome completo"
+                               required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="employee_id" class="form-label">
+                            <i class="bi bi-badge-ad"></i> ID do Funcionário
+                        </label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="employee_id" 
+                               name="employee_id" 
+                               placeholder="Ex: EMP001, FUNC123"
+                               required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-festa btn-lg">
+                            <i class="bi bi-plus-circle"></i> Gerar QR Code
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-shield-check festa-icon"></i>
+                        <h5 class="card-title">Seguro</h5>
+                        <p class="card-text">QR Codes únicos e seguros para cada funcionário</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-lightning-charge festa-icon"></i>
+                        <h5 class="card-title">Rápido</h5>
+                        <p class="card-text">Validação instantânea na entrada da festa</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            <div>
+                <strong>Como funciona:</strong> 
+                Insira o nome e ID do funcionário para gerar um QR Code único. 
+                O QR Code poderá ser usado uma única vez para entrada na festa.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
