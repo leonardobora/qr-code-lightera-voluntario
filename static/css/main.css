@@ -1,0 +1,94 @@
+/* Custom CSS for QR Code System */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.jumbotron {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+.step-number {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.alert {
+    border: none;
+    border-radius: 0.375rem;
+}
+
+.btn {
+    border-radius: 0.375rem;
+}
+
+.form-control, .form-select {
+    border-radius: 0.375rem;
+}
+
+/* QR Code display */
+.qr-code-container {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* Scanner specific styles */
+#reader {
+    border: 2px dashed #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+    min-height: 300px;
+}
+
+#reader video {
+    border-radius: 0.375rem;
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .navbar, .btn, .alert, footer {
+        display: none !important;
+    }
+    
+    .container {
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Início - Sistema QR Code{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+            <div class="container">
+                <h1 class="display-4">
+                    <i class="bi bi-qr-code me-3"></i>
+                    Sistema QR Code
+                </h1>
+                <p class="lead">Programa Social Corporativo - Geração e Validação de QR Codes</p>
+                <hr class="my-4 bg-white">
+                <p>Gerencie códigos QR para festas, cestas básicas, brinquedos e material escolar de forma simples e eficiente.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-people display-4 text-primary"></i>
+                <h5 class="card-title mt-3">Funcionários</h5>
+                <p class="card-text">Cadastre e gerencie funcionários do programa social.</p>
+                <a href="{{ url_for('employees') }}" class="btn btn-primary">
+                    <i class="bi bi-arrow-right"></i> Gerenciar
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-qr-code-scan display-4 text-success"></i>
+                <h5 class="card-title mt-3">Gerar QR Codes</h5>
+                <p class="card-text">Crie códigos QR para diferentes categorias do programa.</p>
+                <a href="{{ url_for('qr_generator') }}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Gerar
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-camera display-4 text-warning"></i>
+                <h5 class="card-title mt-3">Scanner QR</h5>
+                <p class="card-text">Escaneie e valide códigos QR do programa social.</p>
+                <a href="{{ url_for('scanner') }}" class="btn btn-warning">
+                    <i class="bi bi-camera"></i> Scanner
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-graph-up display-4 text-info"></i>
+                <h5 class="card-title mt-3">Relatórios</h5>
+                <p class="card-text">Visualize estatísticas e relatórios do sistema.</p>
+                <a href="{{ url_for('reports') }}" class="btn btn-info">
+                    <i class="bi bi-bar-chart"></i> Relatórios
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-info-circle"></i> Como Funciona</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-number bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                            1
+                        </div>
+                        <h6>Cadastre Funcionários</h6>
+                        <p class="text-muted small">Registre os funcionários que participam do programa social.</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-number bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                            2
+                        </div>
+                        <h6>Gere QR Codes</h6>
+                        <p class="text-muted small">Crie códigos QR para festas, cestas, brinquedos ou material escolar.</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-number bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                            3
+                        </div>
+                        <h6>Distribua e Use</h6>
+                        <p class="text-muted small">Distribua os códigos para os beneficiários do programa.</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-number bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                            4
+                        </div>
+                        <h6>Valide e Acompanhe</h6>
+                        <p class="text-muted small">Escaneie os códigos para validação e acompanhe nos relatórios.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
