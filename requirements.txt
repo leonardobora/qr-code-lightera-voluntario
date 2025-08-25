@@ -1,0 +1,34 @@
+# QR Code Lightera Voluntario - Python Dependencies
+# Core web framework and application dependencies
+Flask==3.0.0
+Werkzeug==3.0.1
+Jinja2==3.1.2
+MarkupSafe==2.1.3
+itsdangerous==2.1.2
+click==8.1.7
+
+# QR Code generation and image processing
+qrcode==7.4.2
+Pillow==10.1.0
+
+# Database and ORM (if needed beyond SQLite3)
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.23
+
+# Data analysis and visualization (for project scripts)
+pandas==2.1.4
+plotly==5.17.0
+numpy==1.26.2
+kaleido==0.2.1
+
+# Development and testing dependencies
+pytest==7.4.3
+pytest-flask==1.3.0
+python-dotenv==1.0.0
+
+# Web forms and validation
+Flask-WTF==1.2.1
+WTForms==3.1.1
+
+# Additional utilities
+requests==2.31.0
