@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="jumbotron bg-light p-5 rounded-3 text-center">
+            <h1 class="display-4"><i class="bi bi-gift text-success"></i> Cestas de Natal</h1>
+            <p class="lead">Sistema de QR Codes para retirada de cestas natalinas</p>
+            <hr class="my-4">
+            <p>Gerencie e controle a distribuição das cestas de Natal utilizando QR codes</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-plus-circle text-primary" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">Nova Cesta</h5>
+                <p class="card-text">Criar nova cesta de Natal para funcionário</p>
+                <a href="{{ url_for('nova_cesta') }}" class="btn btn-primary">Criar Cesta</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-list-ul text-info" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">Listar Cestas</h5>
+                <p class="card-text">Ver todas as cestas criadas e seus status</p>
+                <a href="{{ url_for('cestas') }}" class="btn btn-info">Ver Cestas</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-qr-code-scan text-success" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">Scanner QR</h5>
+                <p class="card-text">Escanear QR codes para retirada das cestas</p>
+                <a href="{{ url_for('scanner') }}" class="btn btn-success">Abrir Scanner</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
