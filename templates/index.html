@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-primary">
+                <i class="bi bi-qr-code"></i> Sistema QR Code
+            </h1>
+            <p class="lead">Programa Social Corporativo Lightera</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- QR Scanner Card -->
+            <div class="col-md-6">
+                <div class="card h-100 border-primary">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-camera display-1 text-primary"></i>
+                        </div>
+                        <h4 class="card-title">Scanner QR Code</h4>
+                        <p class="card-text">
+                            Escaneie códigos QR usando a câmera do seu dispositivo para validar participação em eventos e atividades.
+                        </p>
+                        <a href="{{ url_for('scanner') }}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-camera"></i> Iniciar Scanner
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="col-md-6">
+                <div class="card h-100 border-secondary">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-info-circle display-1 text-secondary"></i>
+                        </div>
+                        <h4 class="card-title">Como Funciona</h4>
+                        <div class="text-start">
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item border-0 ps-0">Clique em "Iniciar Scanner"</li>
+                                <li class="list-group-item border-0 ps-0">Permita acesso à câmera</li>
+                                <li class="list-group-item border-0 ps-0">Aponte para o QR Code</li>
+                                <li class="list-group-item border-0 ps-0">Aguarde a validação</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">Funcionalidades do Sistema</h3>
+                <div class="row g-3">
+                    <div class="col-md-3 text-center">
+                        <i class="bi bi-gift display-4 text-success"></i>
+                        <h6 class="mt-2">Festas</h6>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <i class="bi bi-basket display-4 text-warning"></i>
+                        <h6 class="mt-2">Cestas</h6>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <i class="bi bi-controller display-4 text-info"></i>
+                        <h6 class="mt-2">Brinquedos</h6>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <i class="bi bi-book display-4 text-danger"></i>
+                        <h6 class="mt-2">Material Escolar</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}Scanner QR - Lightera Voluntário{% endblock %}
+
+{% block styles %}
+<style>
+    #qr-reader {
+        width: 100% !important;
+        max-width: 500px;
+        margin: 0 auto;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    #qr-reader__camera_selection {
+        margin-bottom: 15px;
+    }
+    
+    .scan-result {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    .scan-error {
+        background: linear-gradient(45deg, #dc3545, #fd7e14);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .scanner-controls {
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .scanner-status {
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px 0;
+        font-weight: 500;
+    }
+    
+    .status-waiting {
+        background-color: #e3f2fd;
+        color: #1976d2;
+        border: 1px solid #bbdefb;
+    }
+    
+    .status-scanning {
+        background-color: #fff3e0;
+        color: #f57c00;
+        border: 1px solid #ffcc02;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h2 class="text-primary">
+                <i class="bi bi-camera"></i> Scanner QR Code
+            </h2>
+            <p class="text-muted">Aponte a câmera para um código QR para escaneá-lo</p>
+        </div>
+
+        <!-- Scanner Status -->
+        <div id="scanner-status" class="scanner-status status-waiting">
+            <i class="bi bi-info-circle"></i> Aguardando inicialização da câmera...
+        </div>
+
+        <!-- Scanner Container -->
+        <div class="card">
+            <div class="card-body text-center">
+                <div id="qr-reader"></div>
+                
+                <!-- Scanner Controls -->
+                <div class="scanner-controls">
+                    <button id="start-button" class="btn btn-success btn-lg me-2">
+                        <i class="bi bi-play-fill"></i> Iniciar Scanner
+                    </button>
+                    <button id="stop-button" class="btn btn-danger btn-lg" style="display: none;">
+                        <i class="bi bi-stop-fill"></i> Parar Scanner
+                    </button>
+                    <button id="switch-camera" class="btn btn-secondary btn-lg ms-2" style="display: none;">
+                        <i class="bi bi-arrow-repeat"></i> Trocar Câmera
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="scan-results"></div>
+
+        <!-- Instructions -->
+        <div class="alert alert-info mt-4">
+            <h6><i class="bi bi-lightbulb"></i> Dicas para um bom escaneamento:</h6>
+            <ul class="mb-0">
+                <li>Mantenha o QR Code dentro da área de escaneamento</li>
+                <li>Certifique-se de que há boa iluminação</li>
+                <li>Mantenha o dispositivo estável</li>
+                <li>Aguarde alguns segundos para o reconhecimento automático</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- HTML5-QRCode Library -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<script>
+let html5QrcodeScanner = null;
+let isScanning = false;
+let currentCameraId = null;
+let cameras = [];
+
+// DOM Elements
+const startButton = document.getElementById('start-button');
+const stopButton = document.getElementById('stop-button');
+const switchCameraButton = document.getElementById('switch-camera');
+const scannerStatus = document.getElementById('scanner-status');
+const scanResults = document.getElementById('scan-results');
+
+// Scanner configuration
+const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    console.log('QR Code scanned:', decodedText);
+    
+    // Stop scanner temporarily to prevent multiple scans
+    if (html5QrcodeScanner) {
+        html5QrcodeScanner.pause(true);
+    }
+    
+    // Process the scanned QR code
+    processQRCode(decodedText);
+};
+
+const qrCodeErrorCallback = (error) => {
+    // This is called continuously while scanning, so we don't log it
+    // console.log('QR Code scan error:', error);
+};
+
+// Process scanned QR code
+async function processQRCode(qrData) {
+    try {
+        updateStatus('Processando QR Code...', 'status-scanning');
+        
+        const response = await fetch('/api/process_qr', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                qr_data: qrData,
+                timestamp: new Date().toISOString()
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showScanResult(result, qrData);
+        } else {
+            showScanError('Erro ao processar QR Code: ' + result.message);
+        }
+        
+    } catch (error) {
+        console.error('Error processing QR code:', error);
+        showScanError('Erro de conexão. Tente novamente.');
+    }
+    
+    // Resume scanning after 3 seconds
+    setTimeout(() => {
+        if (html5QrcodeScanner && isScanning) {
+            html5QrcodeScanner.resume();
+            updateStatus('Escaneando... Aponte para um QR Code', 'status-scanning');
+        }
+    }, 3000);
+}
+
+// Show successful scan result
+function showScanResult(result, qrData) {
+    const resultHTML = `
+        <div class="scan-result">
+            <h5><i class="bi bi-check-circle"></i> ${result.message}</h5>
+            <p><strong>Dados:</strong> ${qrData}</p>
+            <small><strong>Timestamp:</strong> ${new Date(result.timestamp).toLocaleString('pt-BR')}</small>
+        </div>
+    `;
+    scanResults.innerHTML = resultHTML;
+    updateStatus('QR Code processado com sucesso!', 'status-waiting');
+}
+
+// Show scan error
+function showScanError(message) {
+    const errorHTML = `
+        <div class="scan-error">
+            <h5><i class="bi bi-exclamation-triangle"></i> Erro</h5>
+            <p>${message}</p>
+        </div>
+    `;
+    scanResults.innerHTML = errorHTML;
+    updateStatus('Erro no processamento', 'status-waiting');
+}
+
+// Update scanner status
+function updateStatus(message, statusClass) {
+    scannerStatus.textContent = message;
+    scannerStatus.className = `scanner-status ${statusClass}`;
+}
+
+// Get available cameras
+async function getCameras() {
+    try {
+        cameras = await Html5Qrcode.getCameras();
+        if (cameras && cameras.length > 1) {
+            switchCameraButton.style.display = 'inline-block';
+        }
+        return cameras;
+    } catch (err) {
+        console.error('Error getting cameras:', err);
+        return [];
+    }
+}
+
+// Start scanner
+async function startScanner() {
+    try {
+        const availableCameras = await getCameras();
+        
+        if (availableCameras.length === 0) {
+            throw new Error('Nenhuma câmera encontrada');
+        }
+        
+        // Use rear camera if available, otherwise use the first camera
+        currentCameraId = availableCameras.find(camera => 
+            camera.label.toLowerCase().includes('back') || 
+            camera.label.toLowerCase().includes('rear')
+        )?.id || availableCameras[0].id;
+        
+        html5QrcodeScanner = new Html5Qrcode("qr-reader");
+        
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        };
+        
+        await html5QrcodeScanner.start(
+            currentCameraId,
+            config,
+            qrCodeSuccessCallback,
+            qrCodeErrorCallback
+        );
+        
+        isScanning = true;
+        startButton.style.display = 'none';
+        stopButton.style.display = 'inline-block';
+        
+        updateStatus('Escaneando... Aponte para um QR Code', 'status-scanning');
+        
+    } catch (err) {
+        console.error('Error starting scanner:', err);
+        updateStatus('Erro ao iniciar câmera: ' + err.message, 'status-waiting');
+        showScanError('Não foi possível acessar a câmera. Verifique as permissões.');
+    }
+}
+
+// Stop scanner
+async function stopScanner() {
+    try {
+        if (html5QrcodeScanner) {
+            await html5QrcodeScanner.stop();
+            html5QrcodeScanner = null;
+        }
+        
+        isScanning = false;
+        startButton.style.display = 'inline-block';
+        stopButton.style.display = 'none';
+        switchCameraButton.style.display = 'none';
+        
+        updateStatus('Scanner parado', 'status-waiting');
+        
+    } catch (err) {
+        console.error('Error stopping scanner:', err);
+    }
+}
+
+// Switch camera
+async function switchCamera() {
+    if (cameras.length <= 1) return;
+    
+    try {
+        // Find next camera
+        const currentIndex = cameras.findIndex(camera => camera.id === currentCameraId);
+        const nextIndex = (currentIndex + 1) % cameras.length;
+        currentCameraId = cameras[nextIndex].id;
+        
+        // Restart scanner with new camera
+        await stopScanner();
+        setTimeout(startScanner, 500);
+        
+    } catch (err) {
+        console.error('Error switching camera:', err);
+    }
+}
+
+// Event listeners
+startButton.addEventListener('click', startScanner);
+stopButton.addEventListener('click', stopScanner);
+switchCameraButton.addEventListener('click', switchCamera);
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateStatus('Pronto para escanear. Clique em "Iniciar Scanner"', 'status-waiting');
+    getCameras();
+});
+</script>
+{% endblock %}
