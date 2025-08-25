@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        {% if validation_status == 'valid' %}
+        <div class="card card-festa shadow border-success">
+            <div class="card-header bg-success text-white text-center">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-check-circle-fill"></i> ENTRADA LIBERADA
+                </h3>
+                <p class="mb-0">QR Code validado com sucesso!</p>
+            </div>
+        {% elif validation_status == 'used' %}
+        <div class="card card-festa shadow border-warning">
+            <div class="card-header bg-warning text-dark text-center">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle-fill"></i> QR CODE JÁ UTILIZADO
+                </h3>
+                <p class="mb-0">Este QR Code já foi usado anteriormente</p>
+            </div>
+        {% else %}
+        <div class="card card-festa shadow border-danger">
+            <div class="card-header bg-danger text-white text-center">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-x-circle-fill"></i> ENTRADA NEGADA
+                </h3>
+                <p class="mb-0">QR Code inválido</p>
+            </div>
+        {% endif %}
+            
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5><i class="bi bi-person-badge"></i> Informações do Funcionário</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ qr_code.employee_name }}</h6>
+                                <p class="card-text">
+                                    <strong>ID:</strong> {{ qr_code.employee_id }}<br>
+                                    <strong>QR Code gerado em:</strong> {{ qr_code.created_at }}<br>
+                                    {% if qr_code.is_used %}
+                                    <strong>Usado em:</strong> {{ qr_code.used_at }}<br>
+                                    <span class="badge bg-warning text-dark">JÁ UTILIZADO</span>
+                                    {% else %}
+                                    <span class="badge bg-success">PRIMEIRO USO</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 text-center">
+                        {% if validation_status == 'valid' %}
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                        <h5 class="text-success mt-2">LIBERADO</h5>
+                        {% elif validation_status == 'used' %}
+                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 5rem;"></i>
+                        <h5 class="text-warning mt-2">JÁ USADO</h5>
+                        {% else %}
+                        <i class="bi bi-x-circle-fill text-danger" style="font-size: 5rem;"></i>
+                        <h5 class="text-danger mt-2">NEGADO</h5>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if validation_status == 'valid' %}
+                <div class="alert alert-success d-flex align-items-center mt-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <div>
+                        <strong>Sucesso!</strong> 
+                        {{ qr_code.employee_name }} está autorizado(a) a entrar na festa. 
+                        Bem-vindo(a)!
+                    </div>
+                </div>
+                {% elif validation_status == 'used' %}
+                <div class="alert alert-warning d-flex align-items-center mt-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>
+                        <strong>Atenção!</strong> 
+                        Este QR Code de {{ qr_code.employee_name }} já foi utilizado em {{ qr_code.used_at }}. 
+                        Cada QR Code só pode ser usado uma vez.
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="mt-4 text-center">
+                    <a href="{{ url_for('validate_qr') }}" class="btn btn-warning me-2">
+                        <i class="bi bi-arrow-left"></i> Validar Outro QR
+                    </a>
+                    
+                    <a href="{{ url_for('scanner') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-camera"></i> Scanner QR
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

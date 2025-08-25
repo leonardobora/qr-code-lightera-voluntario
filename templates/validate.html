@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card card-festa shadow">
+            <div class="card-header bg-warning text-dark text-center">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-check-circle"></i> Validar QR Code
+                </h3>
+                <p class="mb-0">Entrada da Festa de Final de Ano</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('validate_qr') }}">
+                    <div class="mb-4">
+                        <label for="qr_data" class="form-label">
+                            <i class="bi bi-qr-code-scan"></i> Dados do QR Code
+                        </label>
+                        <textarea class="form-control form-control-lg" 
+                                id="qr_data" 
+                                name="qr_data" 
+                                rows="4"
+                                placeholder="Cole aqui os dados do QR Code escaneado ou digite manualmente"
+                                required></textarea>
+                        <div class="form-text">
+                            <i class="bi bi-info-circle"></i> 
+                            Use o scanner ou cole os dados do QR Code aqui
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-warning btn-lg text-dark">
+                            <i class="bi bi-check-circle"></i> Validar Entrada
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('scanner') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-camera"></i> Usar Scanner de QR Code
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-shield-check festa-icon text-success"></i>
+                        <h5 class="card-title text-success">Válido</h5>
+                        <p class="card-text">QR Code válido - entrada liberada</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-x-circle festa-icon text-danger"></i>
+                        <h5 class="card-title text-danger">Inválido</h5>
+                        <p class="card-text">QR Code inválido ou já usado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            <div>
+                <strong>Como validar:</strong> 
+                Escaneie o QR Code com o scanner ou cole os dados manualmente. 
+                Cada QR Code só pode ser usado uma vez.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

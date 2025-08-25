@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card card-festa shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-camera"></i> Scanner de QR Code
+                </h3>
+                <p class="mb-0">Escaneie QR Codes com a câmera</p>
+            </div>
+            <div class="card-body p-4">
+                <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+                
+                <div class="alert alert-info mt-3" role="alert">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Como usar:</strong> 
+                    Posicione o QR Code na frente da câmera. O scanner detectará automaticamente e validará o código.
+                </div>
+                
+                <div id="result" class="mt-3" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">QR Code Detectado</h5>
+                            <div id="qr-data" class="mb-3"></div>
+                            <button id="validate-btn" class="btn btn-warning">
+                                <i class="bi bi-check-circle"></i> Validar Entrada
+                            </button>
+                            <button id="new-scan-btn" class="btn btn-outline-secondary ms-2">
+                                <i class="bi bi-camera"></i> Nova Leitura
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="validation-result" class="mt-3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for camera permission -->
+<div class="modal fade" id="cameraModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Permissão da Câmera</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Para usar o scanner de QR Code, é necessário permitir o acesso à câmera do seu dispositivo.</p>
+                <p>Clique em "Permitir" quando o navegador solicitar a permissão.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendi</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+let html5QrcodeScanner;
+let isScanning = false;
+
+function startScanner() {
+    const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 }
+    };
+    
+    html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", config, /* verbose= */ false);
+    
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    isScanning = true;
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+    console.log(`QR Code detectado: ${decodedText}`);
+    
+    // Stop scanning
+    html5QrcodeScanner.clear();
+    isScanning = false;
+    
+    // Show result
+    document.getElementById('qr-data').textContent = decodedText;
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('validation-result').style.display = 'none';
+    
+    // Set up validation
+    document.getElementById('validate-btn').onclick = function() {
+        validateQRCode(decodedText);
+    };
+    
+    document.getElementById('new-scan-btn').onclick = function() {
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('validation-result').style.display = 'none';
+        startScanner();
+    };
+}
+
+function onScanFailure(error) {
+    // Handle scan failure, usually better to ignore these
+    // console.warn(`QR Code scan error: ${error}`);
+}
+
+function validateQRCode(qrData) {
+    const validationResult = document.getElementById('validation-result');
+    validationResult.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div><p>Validando...</p></div>';
+    validationResult.style.display = 'block';
+    
+    fetch('/api/validate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ qr_data: qrData })
+    })
+    .then(response => response.json())
+    .then(data => {
+        let alertClass = data.success ? 'alert-success' : 'alert-danger';
+        let icon = data.success ? 'check-circle-fill' : 'x-circle-fill';
+        
+        validationResult.innerHTML = `
+            <div class="alert ${alertClass} d-flex align-items-center" role="alert">
+                <i class="bi bi-${icon} me-2"></i>
+                <div>
+                    <strong>${data.success ? 'Sucesso!' : 'Erro!'}</strong> ${data.message}
+                    ${data.employee_name ? `<br><strong>Funcionário:</strong> ${data.employee_name} (${data.employee_id})` : ''}
+                </div>
+            </div>
+        `;
+    })
+    .catch(error => {
+        console.error('Erro na validação:', error);
+        validationResult.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Erro!</strong> Falha na conexão. Tente novamente.
+            </div>
+        `;
+    });
+}
+
+// Start scanner when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Show camera permission modal
+    const cameraModal = new bootstrap.Modal(document.getElementById('cameraModal'));
+    cameraModal.show();
+    
+    // Start scanner after modal is closed
+    document.getElementById('cameraModal').addEventListener('hidden.bs.modal', function() {
+        setTimeout(startScanner, 500);
+    });
+});
+</script>
+{% endblock %}

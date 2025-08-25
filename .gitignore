@@ -1,0 +1,37 @@
+# Database files
+festa_qrcodes.db
+*.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.env
+
+# Generated QR codes
+static/qr_codes/*.png
+static/qr_codes/*.jpg
+!static/qr_codes/.gitkeep
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
