@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-list-ul"></i> Cestas de Natal</h2>
+    <a href="{{ url_for('nova_cesta') }}" class="btn btn-success">
+        <i class="bi bi-plus"></i> Nova Cesta
+    </a>
+</div>
+
+{% if cestas %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Funcionário</th>
+                <th>Departamento</th>
+                <th>Data Criação</th>
+                <th>Status</th>
+                <th>Data Retirada</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cesta in cestas %}
+            <tr>
+                <td>{{ cesta.id }}</td>
+                <td>{{ cesta.codigo_funcionario }}</td>
+                <td>{{ cesta.nome_funcionario }}</td>
+                <td>{{ cesta.departamento or '-' }}</td>
+                <td>{{ cesta.data_criacao }}</td>
+                <td>
+                    {% if cesta.status == 'disponivel' %}
+                        <span class="badge bg-success">Disponível</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Retirada</span>
+                    {% endif %}
+                </td>
+                <td>{{ cesta.data_retirada or '-' }}</td>
+                <td>
+                    {% if cesta.status == 'disponivel' %}
+                        <a href="{{ url_for('cesta_qr', cesta_id=cesta.id) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-qr-code"></i> QR Code
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+    <h4 class="text-muted mt-3">Nenhuma cesta encontrada</h4>
+    <p class="text-muted">Comece criando sua primeira cesta de Natal</p>
+    <a href="{{ url_for('nova_cesta') }}" class="btn btn-success">
+        <i class="bi bi-plus"></i> Criar Primeira Cesta
+    </a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h2><i class="bi bi-plus-circle"></i> Nova Cesta de Natal</h2>
+        
+        <form method="POST" class="mt-4">
+            <div class="mb-3">
+                <label for="codigo_funcionario" class="form-label">Código do Funcionário *</label>
+                <input type="text" class="form-control" id="codigo_funcionario" name="codigo_funcionario" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="nome_funcionario" class="form-label">Nome do Funcionário *</label>
+                <input type="text" class="form-control" id="nome_funcionario" name="nome_funcionario" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="departamento" class="form-label">Departamento</label>
+                <input type="text" class="form-control" id="departamento" name="departamento">
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('cestas') }}" class="btn btn-secondary me-md-2">Cancelar</a>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check"></i> Criar Cesta
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

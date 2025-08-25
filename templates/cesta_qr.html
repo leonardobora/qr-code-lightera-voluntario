@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <h2><i class="bi bi-qr-code"></i> QR Code da Cesta</h2>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Cesta #{{ cesta.id }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Informações da Cesta</h6>
+                        <p><strong>Funcionário:</strong> {{ cesta.nome_funcionario }}</p>
+                        <p><strong>Código:</strong> {{ cesta.codigo_funcionario }}</p>
+                        <p><strong>Departamento:</strong> {{ cesta.departamento or 'Não informado' }}</p>
+                        <p><strong>Status:</strong> 
+                            {% if cesta.status == 'disponivel' %}
+                                <span class="badge bg-success">Disponível</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Retirada</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>QR Code para Retirada</h6>
+                        <div class="qr-code-container p-3 bg-white border rounded">
+                            <img src="data:image/png;base64,{{ qr_code }}" 
+                                 alt="QR Code Cesta #{{ cesta.id }}" 
+                                 class="img-fluid" 
+                                 style="max-width: 200px;">
+                        </div>
+                        <p class="text-muted mt-2 small">
+                            Apresente este QR code para retirar a cesta
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('cestas') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar às Cestas
+                </a>
+                <button onclick="window.print()" class="btn btn-outline-primary">
+                    <i class="bi bi-printer"></i> Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+@media print {
+    .navbar, .btn, .card-footer { display: none !important; }
+    .card { border: none !important; box-shadow: none !important; }
+    .qr-code-container { border: 2px solid #000 !important; }
+}
+</style>
+{% endblock %}
