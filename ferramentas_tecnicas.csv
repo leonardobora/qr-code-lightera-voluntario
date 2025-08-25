@@ -1,0 +1,7 @@
+Ferramenta,Função,Complexidade_Uso,Documentação
+qrcode (Python),Gerar códigos QR,Muito Baixa,Excelente
+Flask,Framework web backend,Baixa,Excelente
+HTML5-QRCode (JS),Escanear QR via browser,Baixa,Boa
+Pillow (PIL),Processamento de imagens,Muito Baixa,Excelente
+SQLite,Banco de dados local,Baixa,Excelente
+Bootstrap/CSS,Interface responsiva,Média,Excelente
