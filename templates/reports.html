@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Relatórios - Sistema QR Code{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-graph-up"></i> Relatórios do Sistema</h2>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <i class="bi bi-qr-code display-4"></i>
+                <h3 class="mt-2">{{ total_qr_codes }}</h3>
+                <p class="mb-0">QR Codes Gerados</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <i class="bi bi-check-circle display-4"></i>
+                <h3 class="mt-2">{{ used_qr_codes }}</h3>
+                <p class="mb-0">QR Codes Utilizados</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center bg-warning text-dark">
+            <div class="card-body">
+                <i class="bi bi-clock display-4"></i>
+                <h3 class="mt-2">{{ total_qr_codes - used_qr_codes }}</h3>
+                <p class="mb-0">QR Codes Pendentes</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <i class="bi bi-percent display-4"></i>
+                <h3 class="mt-2">
+                    {% if total_qr_codes > 0 %}
+                        {{ "%.1f"|format((used_qr_codes / total_qr_codes * 100)) }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </h3>
+                <p class="mb-0">Taxa de Utilização</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Statistics -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-bar-chart"></i> Estatísticas por Categoria</h5>
+            </div>
+            <div class="card-body">
+                {% if category_stats %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Total</th>
+                                    <th>Utilizados</th>
+                                    <th>Percentual</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category, stats in category_stats.items() %}
+                                <tr>
+                                    <td>{{ category }}</td>
+                                    <td><span class="badge bg-primary">{{ stats.total }}</span></td>
+                                    <td><span class="badge bg-success">{{ stats.used }}</span></td>
+                                    <td>
+                                        {% if stats.total > 0 %}
+                                            {{ "%.1f"|format((stats.used / stats.total * 100)) }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Nenhum dado disponível</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-clock-history"></i> Últimos QR Codes Gerados</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_qr_codes %}
+                    <div class="list-group list-group-flush">
+                        {% for qr in recent_qr_codes %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ categories.get(qr.category, qr.category) }}</h6>
+                                <p class="mb-1 text-muted small">{{ qr.employee.name }}</p>
+                                <small class="text-muted">{{ qr.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                            </div>
+                            <span class="badge bg-{{ 'success' if qr.used else 'warning' }}">
+                                {{ 'Usado' if qr.used else 'Pendente' }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Nenhum QR code gerado ainda</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Usage -->
+{% if recent_usage %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-activity"></i> Últimas Utilizações</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>QR Code</th>
+                                <th>Categoria</th>
+                                <th>Funcionário</th>
+                                <th>Scanner</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for usage in recent_usage %}
+                            <tr>
+                                <td>{{ usage.scanned_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td><code>{{ usage.qr_code.code }}</code></td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        {{ categories.get(usage.qr_code.category, usage.qr_code.category) }}
+                                    </span>
+                                </td>
+                                <td>{{ usage.qr_code.employee.name }}</td>
+                                <td class="text-muted">{{ usage.scanner_info or 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Action Buttons -->
+<div class="row mt-4">
+    <div class="col-md-12 text-center">
+        <a href="{{ url_for('qr_generator') }}" class="btn btn-success me-2">
+            <i class="bi bi-plus-circle"></i> Gerar Novo QR
+        </a>
+        <a href="{{ url_for('scanner') }}" class="btn btn-warning me-2">
+            <i class="bi bi-camera"></i> Scanner
+        </a>
+        <a href="{{ url_for('employees') }}" class="btn btn-info">
+            <i class="bi bi-people"></i> Funcionários
+        </a>
+    </div>
+</div>
+{% endblock %}

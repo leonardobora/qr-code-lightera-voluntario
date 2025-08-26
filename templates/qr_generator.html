@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Gerar QR Code - Sistema QR Code{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-qr-code-scan"></i> Gerar Novo QR Code</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('generate_qr') }}">
+                    <div class="mb-3">
+                        <label for="employee_id" class="form-label">Funcionário Responsável</label>
+                        <select class="form-select" id="employee_id" name="employee_id" required>
+                            <option value="">Selecione o funcionário</option>
+                            {% for employee in employees %}
+                                <option value="{{ employee.id }}">{{ employee.name }} - {{ employee.department }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Categoria</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Selecione a categoria</option>
+                            {% for key, value in categories.items() %}
+                                <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descrição (opcional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Adicione detalhes sobre este QR code..."></textarea>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-qr-code"></i> Gerar QR Code
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="bi bi-info-circle"></i> Informações</h6>
+            </div>
+            <div class="card-body">
+                <h6>Categorias Disponíveis:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-balloon text-warning"></i> <strong>Festa:</strong> Eventos e comemorações</li>
+                    <li><i class="bi bi-basket text-success"></i> <strong>Cestas Básicas:</strong> Alimentos essenciais</li>
+                    <li><i class="bi bi-gift text-danger"></i> <strong>Brinquedos:</strong> Presentes para crianças</li>
+                    <li><i class="bi bi-journal-text text-info"></i> <strong>Material Escolar:</strong> Itens educacionais</li>
+                </ul>
+                
+                <hr>
+                
+                <h6>Dicas:</h6>
+                <ul class="small text-muted">
+                    <li>Cada QR code é único e rastreável</li>
+                    <li>Adicione descrições para facilitar a identificação</li>
+                    <li>QR codes podem ser impressos ou enviados digitalmente</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not employees %}
+<div class="alert alert-warning mt-4">
+    <i class="bi bi-exclamation-triangle"></i>
+    <strong>Atenção:</strong> É necessário cadastrar pelo menos um funcionário antes de gerar QR codes.
+    <a href="{{ url_for('new_employee') }}" class="btn btn-sm btn-warning ms-2">
+        <i class="bi bi-plus"></i> Cadastrar Funcionário
+    </a>
+</div>
+{% endif %}
+{% endblock %}
